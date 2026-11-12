@@ -187,7 +187,7 @@ h2{font:400 22px var(--display);margin:0}
   <!-- 메인 메뉴 -->
   <div class="ov" id="menu">
     <div class="card">
-      <h1><small>PROTOTYPE 2.6</small>몽둥이 난투</h1>
+      <h1><small>PROTOTYPE 2.7</small>몽둥이 난투</h1>
       <ul class="rules">
         <li><b>공격</b><span>조이스틱 방향으로 휘둘러요. 자동 조준은 없어요.</span></li>
         <li><b>스킬</b><span>무기마다 고유 스킬. 쓰고 나면 10초 쿨타임.</span></li>
@@ -379,7 +379,7 @@ const WEAPONS=[
   {id:'hammer',name:'대형 망치', desc:'느리지만 한 방이 크다',    range:86, arc:1.35,dmg:24,wind:.34,swing:.14,rec:.42,cd:0,  kb:1.55,spd:.82, type:'swing', sk:'대지 강타',   skd:'내려찍어 주변을 1.5초 기절시켜요'},
   {id:'gun',   name:'총',       desc:'일직선 즉발, 재장전 1.5초', range:340,arc:.04, dmg:20,wind:.05,swing:.05,rec:.12,cd:1.5,kb:1.0, spd:1.0, type:'gun',   sk:'세 갈래 사격',skd:'왼쪽·가운데·오른쪽 세 방향으로 동시에 쏴요'},
   {id:'heal',  name:'치유의 몽둥이',desc:'약하지만 스스로 회복', range:64, arc:1.15,dmg:6, wind:.11,swing:.12,rec:.26,cd:0,  kb:.3,  spd:1.0, type:'swing', sk:'치유',        skd:'내 체력 50% 회복. 팀전에선 주변 아군도 30% 회복'},
-  {id:'shield',name:'방패',     desc:'체력 150. 공격 버튼을 누르고 있으면 정면 막기', range:58,arc:1.0,dmg:10,wind:.10,swing:.11,rec:.22,cd:0,kb:.85,spd:.95,type:'bash',hp:150,sk:'단단해지기',skd:'최대 체력 10% 증가 + 그만큼 회복 + 몸집 10% 커짐'},
+  {id:'shield',name:'방패',     desc:'체력 150. 누르고 있으면 정면 막기. 느리고 대시가 짧아요', range:58,arc:1.0,dmg:10,wind:.10,swing:.11,rec:.22,cd:0,kb:.85,spd:.855,dashMul:.7,type:'bash',hp:150,sk:'단단해지기',skd:'최대 체력 10% 증가 + 그만큼 회복 + 몸집 10% 커짐'},
   {id:'orb',   name:'마력구슬', desc:'누르고 있으면 구슬을 모아요(최대 2초). 클수록 세고, 닿은 적 모두 3번 밀려나요', range:360,arc:.05,dmg:15,dmgTxt:'4×3~18×3',wind:.30,swing:.05,rec:.15,cd:1.2,kb:.55,spd:1.0,type:'orb',sk:'자기장',skd:'날아가는 구슬이 멈추며 주변 적을 끌어당겨요 (구슬이 날아가는 중에만)'},
 ];
 // 마력구슬: 속도(총은 즉발), 사거리, 한 번에 5×3, 자기장 반경·지속
@@ -650,7 +650,7 @@ function stepFighter(f,dt,ix,iy){
   for(let i=0;i<2;i++)if(f.wantSp[i]>0&&f.stun<=0){f.wantSp[i]=0;castSpell(f,f.spells[i])}
   if(!f.skill&&f.wantDash>0&&f.dashCd<=0&&f.stun<=0&&f.state==='idle'){
     const a=il>.25?Math.atan2(iy,ix):f.face;
-    f.vx=Math.cos(a)*520;f.vy=Math.sin(a)*520;f.dashT=.17;f.dashCd=DASH_CD;f.wantDash=0;f.face=a;f.dashAt=gt;
+    const dv=520*(w.dashMul||1);f.vx=Math.cos(a)*dv;f.vy=Math.sin(a)*dv;f.dashT=.17;f.dashCd=DASH_CD;f.wantDash=0;f.face=a;f.dashAt=gt;
   }
   if(f.wantNade>0&&f.nades>0&&f.nadeCd<=0&&f.stun<=0&&(!f.skill||f.skill.id==='whirl')){
     f.wantNade=0;
