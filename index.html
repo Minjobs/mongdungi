@@ -187,7 +187,7 @@ h2{font:400 22px var(--display);margin:0}
   <!-- 메인 메뉴 -->
   <div class="ov" id="menu">
     <div class="card">
-      <h1><small>PROTOTYPE 2.7</small>몽둥이 난투</h1>
+      <h1><small>PROTOTYPE 2.8</small>몽둥이 난투</h1>
       <ul class="rules">
         <li><b>공격</b><span>조이스틱 방향으로 휘둘러요. 자동 조준은 없어요.</span></li>
         <li><b>스킬</b><span>무기마다 고유 스킬. 쓰고 나면 10초 쿨타임.</span></li>
@@ -414,9 +414,9 @@ const MAPS={
 };
 // 스펠 (1개 선택, 대시는 모두 기본)
 const SPELLS={
-  heal:{name:'회복', cd:15, pct:.25,haste:1,desc:'체력 25% 회복 + 1초간 이동속도 +30%'},
-  exh: {name:'탈진', cd:12, range:240,dur:2.5,slow:.6,dmg:.6,desc:'가까운 적 1명을 2.5초간 40% 느리게 + 주는 피해 40% 감소'},
-  ign: {name:'점화', cd:12, range:220,dur:3,dps:5,healCut:.5,desc:'가까운 적 1명에게 3초간 15 고정 피해 + 회복량 절반'},
+  heal:{name:'회복', cd:30, pct:.25,haste:1,desc:'체력 25% 회복 + 1초간 이동속도 +30%'},
+  exh: {name:'탈진', cd:24, range:240,dur:2.5,slow:.6,dmg:.6,desc:'가까운 적 1명을 2.5초간 40% 느리게 + 주는 피해 40% 감소'},
+  ign: {name:'점화', cd:24, range:220,dur:3,dps:5,healCut:.5,desc:'가까운 적 1명에게 3초간 15 고정 피해 + 회복량 절반'},
 };
 const SPELL_IDS=Object.keys(SPELLS);
 const NADE={n:3,fly:1,dist:210,radius:70,dmg:15,kb:1.0,cd:.4};
