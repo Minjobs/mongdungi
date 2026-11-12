@@ -70,8 +70,8 @@ input{-webkit-user-select:text;user-select:text}
 .btn .lbl2{position:relative}
 #bAtk{right:0;bottom:0;width:92px;height:92px;background:var(--accent);font-size:20px;box-shadow:0 6px 0 #a8801a}
 #bDash{right:104px;bottom:0;width:62px;height:62px;background:var(--ink);font-size:15px;box-shadow:0 5px 0 #9a958a}
-#bSp2{right:176px;bottom:4px;width:56px;height:56px;background:#dfe6f0;font-size:14px;box-shadow:0 5px 0 #8b94a3}
-#bSp2.cool,#bDash.cool{opacity:.55}
+#bSp{right:176px;bottom:4px;width:56px;height:56px;background:#dfe6f0;font-size:14px;box-shadow:0 5px 0 #8b94a3}
+#bSp.cool,#bDash.cool{opacity:.55}
 .spl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
 .sp{position:relative;background:transparent;border:1px solid var(--line);color:var(--ink);border-radius:4px;padding:9px 10px;text-align:left;cursor:pointer;display:grid;gap:3px;font-family:var(--body)}
 .sp[aria-pressed="true"]{border-color:var(--net);background:color-mix(in srgb,var(--net) 12%,transparent)}
@@ -179,18 +179,20 @@ h2{font:400 22px var(--display);margin:0}
   <div class="ctrl" id="ctrl" hidden>
     <button class="btn" id="bNade" aria-label="수류탄"><span class="lbl2">수류탄<small id="nadeN">×3</small></span></button>
     <button class="btn" id="bSkill" aria-label="스킬"><span class="cdm" id="skcdm"></span><span class="lbl2">스킬<small id="skName"></small></span></button>
-    <button class="btn" id="bDash" aria-label="스펠 1"><span class="cdm" id="sp1cdm"></span><span class="lbl2" id="sp1Lbl">대시</span></button>
+    <button class="btn" id="bSp" aria-label="스펠"><span class="cdm" id="spcdm"></span><span class="lbl2" id="spLbl">회복</span></button>
+    <button class="btn" id="bDash" aria-label="대시"><span class="cdm" id="dashcdm"></span><span class="lbl2">대시</span></button>
     <button class="btn" id="bAtk" aria-label="공격"><span class="cdm" id="cdm"></span><span class="lbl2">공격<small id="wName"></small></span></button>
   </div>
 
   <!-- 메인 메뉴 -->
   <div class="ov" id="menu">
     <div class="card">
-      <h1><small>PROTOTYPE 2.5</small>몽둥이 난투</h1>
+      <h1><small>PROTOTYPE 2.6</small>몽둥이 난투</h1>
       <ul class="rules">
         <li><b>공격</b><span>조이스틱 방향으로 휘둘러요. 자동 조준은 없어요.</span></li>
         <li><b>스킬</b><span>무기마다 고유 스킬. 쓰고 나면 10초 쿨타임.</span></li>
-        <li><b>스펠</b><span>대시·회복·탈진·점화 중 1개를 골라서 D키로 써요. 대시 중엔 공격을 70% 확률로 피해요.</span></li>
+        <li><b>대시</b><span>모두 기본으로 써요(Shift). 대시 중엔 공격을 70% 확률로 피해요.</span></li>
+        <li><b>스펠</b><span>회복·탈진·점화 중 1개를 골라서 E키로 써요.</span></li>
         <li><b>수류탄</b><span>한 판에 3개. 1초 날아가서 떨어지는 순간 터져요.</span></li>
         <li><b>탈락</b><span>링 밖으로 떨어지거나 HP가 0이 되면 끝.</span></li>
       </ul>
@@ -212,7 +214,7 @@ h2{font:400 22px var(--display);margin:0}
         <div class="weps" id="weps"></div>
       </div>
       <div class="grp">
-        <span class="lbl">스펠 (1개 선택 · PC는 D키)</span>
+        <span class="lbl">스펠 (1개 선택 · PC는 E키)</span>
         <div class="spl" id="spells"></div>
       </div>
       <div class="sect">
@@ -244,7 +246,7 @@ h2{font:400 22px var(--display);margin:0}
         <p class="note">좁아지는 링: 15초 뒤부터 링이 계속 줄어들어 결국 가운데서 붙게 돼요.</p>
         <button class="go" id="start">봇전 시작</button>
       </div>
-      <p class="note">폰: 왼쪽 화면 드래그로 이동, 오른쪽 버튼으로 공격·스킬·스펠·수류탄<br>PC: 방향키 이동(방향 바꿀 때 16방향을 거쳐 돌아요) · Space 공격 · Q 스킬 · W 수류탄 · D 스펠 · 1·2·3 스티커 · Enter 채팅</p>
+      <p class="note">폰: 왼쪽 화면 드래그로 이동, 오른쪽 버튼으로 공격·스킬·대시·스펠·수류탄<br>PC: 방향키 이동(방향 바꿀 때 16방향을 거쳐 돌아요) · Space 공격 · Shift 대시 · Q 스킬 · W 수류탄 · E 스펠 · 1·2·3 스티커 · Enter 채팅</p>
     </div>
   </div>
 
@@ -410,9 +412,8 @@ const MAPS={
   ring:  {name:'기본 링',     desc:'넓은 원형 링'},
   shrink:{name:'좁아지는 링', desc:'15초 뒤부터 링이 계속 줄어들어요. 결국 가운데서 개싸움!',start:.85,from:15,dur:35,min:.42},
 };
-// 스펠 (1개 선택)
+// 스펠 (1개 선택, 대시는 모두 기본)
 const SPELLS={
-  dash:{name:'대시', cd:DASH_CD,desc:'짧게 돌진. 돌진 중 공격 70% 회피'},
   heal:{name:'회복', cd:15, pct:.25,haste:1,desc:'체력 25% 회복 + 1초간 이동속도 +30%'},
   exh: {name:'탈진', cd:12, range:240,dur:2.5,slow:.6,dmg:.6,desc:'가까운 적 1명을 2.5초간 40% 느리게 + 주는 피해 40% 감소'},
   ign: {name:'점화', cd:12, range:220,dur:3,dps:5,healCut:.5,desc:'가까운 적 1명에게 3초간 15 고정 피해 + 회복량 절반'},
@@ -462,7 +463,7 @@ function resize(){
 addEventListener('resize',resize);resize();
 
 // ---------- 닉네임 ----------
-let mySpells=['dash'];
+let mySpells=['heal'];
 try{const v=localStorage.getItem('mgd-spell');if(SPELL_IDS.includes(v))mySpells=[v]}catch(_){}
 let myNick='';
 try{myNick=clean(localStorage.getItem('mgd-nick'),10)}catch(_){}
@@ -482,12 +483,12 @@ function fighter(x,y,face,w,ctl,col,name){
     skCd:0,skill:null,inv:0,lastSkill:null,lastShots:null,spdMul:1,slowT:0,atkMul:1,
     think:0,react:.5,tg:null,lastBy:null,lastT:-9,kos:0,hits:0,hitSeq:0,dg:0,atkId:0,
     rx:x,ry:y,rvx:0,rvy:0,rt:0,q:-1,ready:true,emo:null,
-    sc:1,spells:['dash'],spCd:{},wantSp:[0,0],lastSpell:null,exhT:0,ignT:0,ignAcc:0,ignBy:null,hasteT:0};
+    sc:1,spells:['heal'],spCd:{},wantSp:[0,0],lastSpell:null,exhT:0,ignT:0,ignAcc:0,ignBy:null,hasteT:0};
 }
 function mk(i,n,w,ctl){
   const a=Math.PI/2+i*2*Math.PI/n,rr=Math.min(n>4?R-170:260,R-60);
   const f=fighter(Math.cos(a)*rr,Math.sin(a)*rr,a+Math.PI,w,ctl,COLS[i][1],COLS[i][0]);f.i=i;
-  f.spells=ctl==='bot'?[['dash','dash','heal','exh','ign'][Math.floor(Math.random()*5)]]:mySpells.slice();
+  f.spells=ctl==='bot'?[['heal','exh','ign'][Math.floor(Math.random()*3)]]:mySpells.slice();
   return f;
 }
 function backdrop(){R=400*MAP;F=[];for(let i=0;i<9;i++)F.push(mk(i,9,i%WEAPONS.length,'bot'));P=F[0]}
@@ -512,7 +513,7 @@ function pressDash(){if(mode==='play'&&P)P.wantDash=.15}
 function pressSpell(i){
   if(mode!=='play'||!P)return;
   const id=P.spells[i];if(!id)return;
-  if(id==='dash')pressDash();else P.wantSp[i]=.15;
+  P.wantSp[i]=.15;
 }
 function pressNade(){if(mode==='play'&&P)P.wantNade=.15}
 function pressSkill(){if(mode==='play'&&P)P.wantSkill=.15}
@@ -524,7 +525,8 @@ addEventListener('keydown',e=>{
   if(e.code==='Space'){if(!e.repeat){pressAtk();atkHeld=true}if(mode==='play')e.preventDefault()}
   if(e.code==='KeyQ')pressSkill();
   if(e.code==='KeyW')pressNade();
-  if(e.code==='KeyD')pressSpell(0);
+  if(e.code==='ShiftLeft'||e.code==='ShiftRight')pressDash();
+  if(e.code==='KeyE')pressSpell(0);
   if(mode==='play'&&e.code.startsWith('Arrow'))e.preventDefault();
   const em=/^(Digit|Numpad)([123])$/.exec(e.code);if(em)sendEmo(+em[2]-1);
 });
@@ -556,7 +558,7 @@ function bindBtn(el,fn){
   el.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();fn()}});
 }
 bindBtn($('bAtk'),()=>{pressAtk();atkHeld=true});
-for(const ev of ['pointerup','pointercancel','pointerleave'])$('bAtk').addEventListener(ev,()=>{atkHeld=false});bindBtn($('bDash'),()=>pressSpell(0));bindBtn($('bNade'),pressNade);bindBtn($('bSkill'),pressSkill);
+for(const ev of ['pointerup','pointercancel','pointerleave'])$('bAtk').addEventListener(ev,()=>{atkHeld=false});bindBtn($('bDash'),pressDash);bindBtn($('bSp'),()=>pressSpell(0));bindBtn($('bNade'),pressNade);bindBtn($('bSkill'),pressSkill);
 
 // 방향키: 방향을 바꿀 때 바로 꺾이지 않고 22.5°씩(16방향) 차례로 돌아요.
 // 예) ↑ 누르다가 → 를 같이 누르면 ↑ → 22.5° → 45° 순서로 돌아서, 도는 중에 공격하면 그 방향으로 나가요.
@@ -646,7 +648,7 @@ function stepFighter(f,dt,ix,iy){
   }
   if(!busy&&f.wantSkill>0&&f.skCd<=0&&f.state==='idle'&&f.stun<=0&&f.dashT<=0){f.wantSkill=0;useSkill(f,ix,iy)}
   for(let i=0;i<2;i++)if(f.wantSp[i]>0&&f.stun<=0){f.wantSp[i]=0;castSpell(f,f.spells[i])}
-  if(!f.skill&&f.wantDash>0&&f.spells.includes('dash')&&f.dashCd<=0&&f.stun<=0&&f.state==='idle'){
+  if(!f.skill&&f.wantDash>0&&f.dashCd<=0&&f.stun<=0&&f.state==='idle'){
     const a=il>.25?Math.atan2(iy,ix):f.face;
     f.vx=Math.cos(a)*520;f.vy=Math.sin(a)*520;f.dashT=.17;f.dashCd=DASH_CD;f.wantDash=0;f.face=a;f.dashAt=gt;
   }
@@ -844,7 +846,7 @@ function nearestFoe(f,range){
 }
 const canSeeFrom=(f,t)=>f===P?canSee(t):!(t.inv>0);
 function castSpell(f,id){
-  const S=SPELLS[id];if(!S||id==='dash'||(f.spCd[id]||0)>0)return;
+  const S=SPELLS[id];if(!S||(f.spCd[id]||0)>0)return;
   if(id==='heal'){
     const h=healAmt(f,Math.min(f.maxHp-f.hp,Math.round(f.maxHp*S.pct)));f.hp+=h;f.hasteT=S.haste;healFx(f,h);
     f.spCd[id]=S.cd;f.lastSpell={k:id,to:-1};return;
@@ -1068,7 +1070,7 @@ function think(f,dt){
     if(d<200){ax+=dx/d*1.3;ay+=dy/d*1.3;break}
   }
   for(let i=0;i<2;i++){
-    const id=f.spells[i];if(id==='dash'||(f.spCd[id]||0)>0||f.stun>0)continue;
+    const id=f.spells[i];if(!id||(f.spCd[id]||0)>0||f.stun>0)continue;
     const dd=t?Math.hypot(t.x-f.x,t.y-f.y):1e9;
     if((id==='heal'&&f.hp<f.maxHp*.35)||(id==='exh'&&t&&dd<200&&f.hp<f.maxHp*.7)||(id==='ign'&&t&&dd<200&&t.hp<t.maxHp*.4))if(Math.random()<dt*3)f.wantSp[i]=.1;
   }
@@ -1936,7 +1938,7 @@ function renderProf(){
     <div class="ln"><span>HP</span><span>${P.hp} / ${P.maxHp}</span></div>
     <div class="ln"><span>${esc(w.name)} · ${esc(w.sk)}</span><span style="color:${sk==='준비됨'?'var(--skill)':'inherit'}">${sk}</span></div>
     <div class="ln"><span>수류탄</span><span>${P.nades}개</span></div>
-    <div class="ln"><span>스펠</span><span>${P.spells.map(id=>{const l=id==='dash'?P.dashCd:(P.spCd[id]||0);return SPELLS[id].name+(l>0?' '+Math.ceil(l):'')}).join(' · ')}</span></div>
+    <div class="ln"><span>스펠</span><span>${P.spells.map(id=>{const l=P.spCd[id]||0;return SPELLS[id].name+(l>0?' '+Math.ceil(l):'')}).join(' · ')}</span></div>
     ${buffs.length?`<div class="buffs">${buffs.join('')}</div>`:''}`;
   if(html!==profKey){profKey=html;$('prof').innerHTML=html}
 }
@@ -2347,12 +2349,14 @@ function draw(dt){
       ctx.fillText('여기를 드래그해서 이동',20,H-28);
     }
     if(P){
-      for(let i=0;i<1;i++){
-        const id=P.spells[i],S=SPELLS[id],left=id==='dash'?P.dashCd:(P.spCd[id]||0);
-        const el=$('bDash'),lb=$('sp1Lbl'),cd=$('sp1cdm');
-        el.classList.toggle('cool',left>0);
-        const txt=left>0&&id!=='dash'?S.name+' '+Math.ceil(left):S.name;if(lb.textContent!==txt)lb.textContent=txt;
-        cd.style.transform=`scaleY(${Math.max(0,Math.min(1,left/S.cd))})`;
+      $('bDash').classList.toggle('cool',P.dashCd>0);
+      $('dashcdm').style.transform=`scaleY(${Math.max(0,Math.min(1,P.dashCd/DASH_CD))})`;
+      const id=P.spells[0],S=SPELLS[id];
+      if(S){
+        const left=P.spCd[id]||0,txt=left>0?S.name+' '+Math.ceil(left):S.name;
+        $('bSp').classList.toggle('cool',left>0);
+        if($('spLbl').textContent!==txt)$('spLbl').textContent=txt;
+        $('spcdm').style.transform=`scaleY(${Math.max(0,Math.min(1,left/S.cd))})`;
       }
     }
     const cdr=P&&P.w.cd?Math.max(0,P.atkCd)/P.w.cd:0;
@@ -2409,7 +2413,7 @@ function pickSpell(id){
 }
 function renderSpells(){
   $('spells').innerHTML=SPELL_IDS.map(id=>{const S=SPELLS[id],k=mySpells.indexOf(id);
-    return `<button class="sp" data-id="${id}" aria-pressed="${k>=0}">${k>=0?'<em>D</em>':''}<strong>${S.name}</strong><span>쿨타임 ${S.cd}초</span><span>${S.desc}</span></button>`}).join('');
+    return `<button class="sp" data-id="${id}" aria-pressed="${k>=0}">${k>=0?'<em>E</em>':''}<strong>${S.name}</strong><span>쿨타임 ${S.cd}초</span><span>${S.desc}</span></button>`}).join('');
   $('wSpells').innerHTML=SPELL_IDS.map(id=>`<button data-id="${id}" aria-pressed="${mySpells.includes(id)}">${SPELLS[id].name}</button>`).join('');
 }
 renderSpells();
