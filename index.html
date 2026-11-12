@@ -187,7 +187,7 @@ h2{font:400 22px var(--display);margin:0}
   <!-- 메인 메뉴 -->
   <div class="ov" id="menu">
     <div class="card">
-      <h1><small>PROTOTYPE 3.1</small>몽둥이 난투</h1>
+      <h1><small>PROTOTYPE 3.2</small>몽둥이 난투</h1>
       <ul class="rules">
         <li><b>공격</b><span>조이스틱 방향으로 휘둘러요. 자동 조준은 없어요.</span></li>
         <li><b>스킬</b><span>무기마다 고유 스킬. 쓰고 나면 10초 쿨타임.</span></li>
@@ -379,7 +379,7 @@ const WEAPONS=[
   {id:'hammer',name:'대형 망치', desc:'느리지만 한 방이 크다',    range:86, arc:1.35,dmg:24,wind:.34,swing:.14,rec:.42,cd:0,  kb:1.55,spd:.82, type:'swing', sk:'대지 강타',   skd:'내려찍어 주변을 1.2초 기절시켜요'},
   {id:'gun',   name:'총',       desc:'일직선 즉발, 재장전 1.5초', range:340,arc:.04, dmg:25,wind:.05,swing:.05,rec:.12,cd:1.5,kb:1.0, spd:1.0, type:'gun',   sk:'세 갈래 사격',skd:'왼쪽·가운데·오른쪽 세 방향으로 동시에 쏴요'},
   {id:'heal',  name:'치유의 몽둥이',desc:'약하지만 스스로 회복', range:64, arc:1.15,dmg:6, wind:.11,swing:.12,rec:.26,cd:0,  kb:.3,  spd:1.0, type:'swing', sk:'치유',        skd:'내 체력 50% 회복. 팀전에선 주변 아군도 30% 회복'},
-  {id:'shield',name:'방패',     desc:'체력 150. 누르고 있으면 정면 막기. 느리고 대시가 짧아요', range:58,arc:1.0,dmg:10,wind:.10,swing:.11,rec:.22,cd:0,kb:.85,spd:.855,dashMul:.7,type:'bash',hp:150,sk:'단단해지기',skd:'최대 체력 10% 증가 + 그만큼 회복 + 몸집 10% 커짐'},
+  {id:'shield',name:'방패',     desc:'체력 150. 누르고 있으면 정면 막기. 느리고 대시가 짧아요', range:58,arc:1.0,dmg:8,wind:.10,swing:.11,rec:.22,cd:0,kb:.85,spd:.855,dashMul:.7,type:'bash',hp:150,sk:'단단해지기',skd:'최대 체력 10% 증가 + 그만큼 회복 + 몸집 10% 커짐'},
   {id:'orb',   name:'마력구슬', desc:'누르고 있으면 구슬을 모아요(최대 2초). 클수록 세고, 닿은 적 모두 3번 밀려나요', range:360,arc:.05,dmg:15,dmgTxt:'4×3~18×3',wind:.30,swing:.05,rec:.15,cd:1.2,kb:.55,spd:1.0,type:'orb',sk:'자기장',skd:'날아가는 구슬이 멈추며 주변 적을 끌어당겨요 (구슬이 날아가는 중에만)'},
 ];
 // 마력구슬: 속도(총은 즉발), 사거리, 한 번에 5×3, 자기장 반경·지속
@@ -529,6 +529,7 @@ addEventListener('keydown',e=>{
   if(e.code==='KeyE')pressSpell(0);
   if(mode==='play'&&e.code.startsWith('Arrow'))e.preventDefault();
   const em=/^(Digit|Numpad)([123])$/.exec(e.code);if(em)sendEmo(+em[2]-1);
+  if((e.code==='Digit8'||e.code==='Numpad8')&&!e.repeat)toggleAim();
 });
 addEventListener('keyup',e=>{keys[e.code]=false;if(e.code==='Space')atkHeld=false});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;atkHeld=false});
@@ -701,6 +702,7 @@ function stepSkill(f,dt,cands,onHit){
   s.t+=dt;
   if(s.id==='tri'){
     const got=new Set();f.lastShots=[];
+    const ah=aimHackAngle(f,cands);if(ah!==null){s.a=ah;f.face=ah}
     for(const off of [-.22,0,.22]){
       const a=s.a+off,r=gunRayA(f,a,cands.filter(t=>!got.has(t)));
       const shot={x:f.x+Math.cos(a)*(CR+18),y:f.y+Math.sin(a)*(CR+18),a,d:Math.max(0,r.d-CR-18)};
@@ -770,6 +772,16 @@ function inReach(f,t){
   const slack=w.type==='thrust'?Math.asin(Math.min(1,tr/Math.max(d,tr))):0;
   return d<=reach+tr*.6&&Math.abs(angDiff(Math.atan2(dy,dx),f.face))<=w.arc+slack;
 }
+// ---------- 테스트용 에임핵 (키보드 8로 켜고 끄기, 내 캐릭터만) ----------
+let aimHack=false;
+const AIM_CMD='/aim'; // 채팅창에 이걸 치면 켜고 끄기 (상대에게는 안 보내져요)
+function toggleAim(){aimHack=!aimHack;let d=document.getElementById('ahDot');if(!d){d=document.createElement('div');d.id='ahDot';d.style.cssText='position:fixed;left:calc(4px + env(safe-area-inset-left,0px));bottom:calc(4px + env(safe-area-inset-bottom,0px));width:3px;height:3px;border-radius:50%;background:#8e95ab;opacity:.55;pointer-events:none;z-index:99';document.body.appendChild(d)}d.hidden=!aimHack}
+function aimHackAngle(f,cands){
+  if(!aimHack||f.ctl!=='local')return null;
+  let best=null,bd=GUN.range+CR;
+  for(const t of cands){if(!alive(t))continue;const d=Math.hypot(t.x-f.x,t.y-f.y);if(d<=bd){bd=d;best=t}}
+  return best?Math.atan2(best.y-f.y,best.x-f.x):null;
+}
 function gunRayA(f,a,cands){
   const cx=Math.cos(a),cy=Math.sin(a),rg=GUN.range;let best=null,bd=rg;
   for(const t of cands){
@@ -788,6 +800,7 @@ function attackTargets(f,cands){
   if(f.w.type==='gun'){
     if(f.fired)return {hits:[],shot:null};
     f.fired=true;
+    const ah=aimHackAngle(f,cands);if(ah!==null)f.face=ah;
     const r=gunRayA(f,f.face,cands);
     const shot={x:f.x+Math.cos(f.face)*(CR+18),y:f.y+Math.sin(f.face)*(CR+18),a:f.face,d:Math.max(0,r.d-CR-18)};
     addShot(shot);
@@ -1862,6 +1875,7 @@ function renderChat(){
 }
 function sendChat(raw){
   const tx=clean(raw,60);
+  if(tx&&tx.trim().toLowerCase()===AIM_CMD){toggleAim();return true}
   if(!tx||!net||net.me<0)return false;
   const now=performance.now()/1000;if(now-chatAt<.5)return false;chatAt=now;
   out({t:'chat',tx});addChat(net.me,tx,-1);return true;
