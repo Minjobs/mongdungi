@@ -529,7 +529,7 @@ addEventListener('keydown',e=>{
   if(e.code==='KeyE')pressSpell(0);
   if(mode==='play'&&e.code.startsWith('Arrow'))e.preventDefault();
   const em=/^(Digit|Numpad)([123])$/.exec(e.code);if(em)sendEmo(+em[2]-1);
-  if((e.code==='Digit8'||e.code==='Numpad8')&&!e.repeat)toggleAim();
+  if((e.code==='Digit8'||e.code==='Numpad8')&&!e.repeat&&aimUnlocked)toggleAim();
 });
 addEventListener('keyup',e=>{keys[e.code]=false;if(e.code==='Space')atkHeld=false});
 addEventListener('blur',()=>{for(const k in keys)keys[k]=false;atkHeld=false});
@@ -773,9 +773,9 @@ function inReach(f,t){
   return d<=reach+tr*.6&&Math.abs(angDiff(Math.atan2(dy,dx),f.face))<=w.arc+slack;
 }
 // ---------- 테스트용 에임핵 (키보드 8로 켜고 끄기, 내 캐릭터만) ----------
-let aimHack=false;
+let aimHack=false,aimUnlocked=false; // /aim으로 잠금 해제해야 8이 작동해요
 const AIM_CMD='/aim'; // 채팅창에 이걸 치면 켜고 끄기 (상대에게는 안 보내져요)
-function toggleAim(){aimHack=!aimHack;let d=document.getElementById('ahDot');if(!d){d=document.createElement('div');d.id='ahDot';d.style.cssText='position:fixed;left:calc(4px + env(safe-area-inset-left,0px));bottom:calc(4px + env(safe-area-inset-bottom,0px));width:3px;height:3px;border-radius:50%;background:#8e95ab;opacity:.55;pointer-events:none;z-index:99';document.body.appendChild(d)}d.hidden=!aimHack}
+function toggleAim(v){aimHack=v===undefined?!aimHack:v;let d=document.getElementById('ahDot');if(!d){d=document.createElement('div');d.id='ahDot';d.style.cssText='position:fixed;left:calc(4px + env(safe-area-inset-left,0px));bottom:calc(4px + env(safe-area-inset-bottom,0px));width:3px;height:3px;border-radius:50%;background:#8e95ab;opacity:.55;pointer-events:none;z-index:99';document.body.appendChild(d)}d.hidden=!aimHack}
 function aimHackAngle(f,cands){
   if(!aimHack||f.ctl!=='local')return null;
   let best=null,bd=GUN.range+CR;
@@ -1875,7 +1875,7 @@ function renderChat(){
 }
 function sendChat(raw){
   const tx=clean(raw,60);
-  if(tx&&tx.trim().toLowerCase()===AIM_CMD){toggleAim();return true}
+  if(tx&&tx.trim().toLowerCase()===AIM_CMD){aimUnlocked=!aimUnlocked;toggleAim(aimUnlocked);return true}
   if(!tx||!net||net.me<0)return false;
   const now=performance.now()/1000;if(now-chatAt<.5)return false;chatAt=now;
   out({t:'chat',tx});addChat(net.me,tx,-1);return true;
