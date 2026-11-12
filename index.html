@@ -187,7 +187,7 @@ h2{font:400 22px var(--display);margin:0}
   <!-- 메인 메뉴 -->
   <div class="ov" id="menu">
     <div class="card">
-      <h1><small>PROTOTYPE 2.8</small>몽둥이 난투</h1>
+      <h1><small>PROTOTYPE 3.1</small>몽둥이 난투</h1>
       <ul class="rules">
         <li><b>공격</b><span>조이스틱 방향으로 휘둘러요. 자동 조준은 없어요.</span></li>
         <li><b>스킬</b><span>무기마다 고유 스킬. 쓰고 나면 10초 쿨타임.</span></li>
@@ -376,8 +376,8 @@ const WEAPONS=[
   {id:'club',  name:'몽둥이',   desc:'무난한 기본기',          range:66, arc:1.15,dmg:12,wind:.09,swing:.11,rec:.20,cd:0,  kb:1.0, spd:1.0, type:'swing', sk:'회오리',      skd:'1.6초간 빙글빙글 돌며 주변을 계속 때려요'},
   {id:'dagger',name:'단검',     desc:'빠르지만 짧고 가볍다',    range:44, arc:.95, dmg:6, wind:.03,swing:.06,rec:.07,cd:0,  kb:.3,  spd:1.12,type:'swing', sk:'투명화',      skd:'3초간 적에게 안 보여요(맞긴 해요). 투명에서 첫 공격은 250% + 0.7초 기절'},
   {id:'spear', name:'창',       desc:'멀리 찌른다, 범위 좁음',   range:112,arc:.32, dmg:10,wind:.13,swing:.09,rec:.30,cd:0,  kb:1.1, spd:.95, type:'thrust',sk:'연속 찌르기', skd:'앞으로 세 번 돌진하며 푹 푹 푹'},
-  {id:'hammer',name:'대형 망치', desc:'느리지만 한 방이 크다',    range:86, arc:1.35,dmg:24,wind:.34,swing:.14,rec:.42,cd:0,  kb:1.55,spd:.82, type:'swing', sk:'대지 강타',   skd:'내려찍어 주변을 1.5초 기절시켜요'},
-  {id:'gun',   name:'총',       desc:'일직선 즉발, 재장전 1.5초', range:340,arc:.04, dmg:20,wind:.05,swing:.05,rec:.12,cd:1.5,kb:1.0, spd:1.0, type:'gun',   sk:'세 갈래 사격',skd:'왼쪽·가운데·오른쪽 세 방향으로 동시에 쏴요'},
+  {id:'hammer',name:'대형 망치', desc:'느리지만 한 방이 크다',    range:86, arc:1.35,dmg:24,wind:.34,swing:.14,rec:.42,cd:0,  kb:1.55,spd:.82, type:'swing', sk:'대지 강타',   skd:'내려찍어 주변을 1.2초 기절시켜요'},
+  {id:'gun',   name:'총',       desc:'일직선 즉발, 재장전 1.5초', range:340,arc:.04, dmg:25,wind:.05,swing:.05,rec:.12,cd:1.5,kb:1.0, spd:1.0, type:'gun',   sk:'세 갈래 사격',skd:'왼쪽·가운데·오른쪽 세 방향으로 동시에 쏴요'},
   {id:'heal',  name:'치유의 몽둥이',desc:'약하지만 스스로 회복', range:64, arc:1.15,dmg:6, wind:.11,swing:.12,rec:.26,cd:0,  kb:.3,  spd:1.0, type:'swing', sk:'치유',        skd:'내 체력 50% 회복. 팀전에선 주변 아군도 30% 회복'},
   {id:'shield',name:'방패',     desc:'체력 150. 누르고 있으면 정면 막기. 느리고 대시가 짧아요', range:58,arc:1.0,dmg:10,wind:.10,swing:.11,rec:.22,cd:0,kb:.85,spd:.855,dashMul:.7,type:'bash',hp:150,sk:'단단해지기',skd:'최대 체력 10% 증가 + 그만큼 회복 + 몸집 10% 커짐'},
   {id:'orb',   name:'마력구슬', desc:'누르고 있으면 구슬을 모아요(최대 2초). 클수록 세고, 닿은 적 모두 3번 밀려나요', range:360,arc:.05,dmg:15,dmgTxt:'4×3~18×3',wind:.30,swing:.05,rec:.15,cd:1.2,kb:.55,spd:1.0,type:'orb',sk:'자기장',skd:'날아가는 구슬이 멈추며 주변 적을 끌어당겨요 (구슬이 날아가는 중에만)'},
@@ -397,13 +397,13 @@ const ORB={speed:430,range:360,r:14,tick:.15,ticks:3,fieldR:150,fieldDur:.6,pull
 const COMBO={n:5,win:1.2,kb:2.4,minV:520};
 const GUN=WEAPONS.find(w=>w.id==='gun');
 // 스킬로 맞았을 때의 데미지·넉백
-const SW={orb:{dmg:5,kb:.55},whirl:{dmg:5,kb:.04},tri:{dmg:14,kb:.9},lunge:{dmg:9,kb:.7},lunge3:{dmg:9,kb:1.3},slam:{dmg:18,kb:.5,stun:1.5}};
+const SW={orb:{dmg:5,kb:.55},whirl:{dmg:5,kb:.04},tri:{dmg:14,kb:.9},lunge:{dmg:9,kb:.7},lunge3:{dmg:9,kb:1.3},slam:{dmg:18,kb:.5,stun:1.2}};
 const WHIRL={dur:1.6,tick:.25,r:CR+70};
 const LUNGE={per:.26,n:3,spd:470,range:120,arc:.5};
 const SLAM={wind:.38,end:.62,off:45,r:105};
 const STEALTH=3;
 const AMBUSH={mul:2.5,stun:.7};      // 투명에서 첫 공격
-const BLOCK={cut:.7,arc:Math.PI/3,move:.45,hold:.2}; // 방패 막기: 정면 ±60°, 데미지·넉백 70% 감소
+const BLOCK={cut:.7,kbCut:.96,arc:Math.PI/3,move:.45,hold:.2}; // 방패 막기: 정면 ±60°, 데미지 70%·넉백 96% 감소 (밀리지 않고 전진 가능)
 const HEAL_TEAM={pct:.3,r:170};      // 팀전 치유: 주변 아군 30%
 const DASH_CD=1.4;
 const GROW={step:1.1,max:2}; // 방패 단단해지기: 쓸 때마다 몸집 10% 커짐 (최대 2배)
@@ -803,7 +803,8 @@ function applyHit(t,ax,ay,w,noKb){
   const dx=t.x-ax,dy=t.y-ay,d=Math.hypot(dx,dy)||1,nx=dx/d,ny=dy/d;
   if(!noKb){
     const lost=100*(1-t.hp/t.maxHp),kb=(290+lost*5.5)*w.kb;
-    t.vx=nx*kb;t.vy=ny*kb;t.stun=(.16+lost*.004)*Math.min(1.4,.6+w.kb*.4);t.dashT=0;
+    if(w.blk){t.vx+=nx*kb;t.vy+=ny*kb}else{t.vx=nx*kb;t.vy=ny*kb;t.dashT=0}
+    t.stun=(.16+lost*.004)*Math.min(1.4,.6+w.kb*.4);
     if(!t.skill&&!t.charging&&t.state!=='idle'&&w.dmg>=10){t.state='idle';t.st=0}
     // 넉백으로는 스킬이 끊기지 않아요 (밀려난 자리에서 그대로 시전)
   }
@@ -816,13 +817,16 @@ function applyHit(t,ax,ay,w,noKb){
 }
 // 맞는 쪽 판정: 대시 중이면 70% 회피(못 피하면 넉백 없음), 방패 정면 막기면 70% 감소
 function receiveHit(t,ax,ay,w,mine){
+  let blocked=false;
   if(t.blocking&&Math.abs(angDiff(Math.atan2(ay-t.y,ax-t.x),t.face))<=BLOCK.arc){
-    w={dmg:Math.max(1,Math.round(w.dmg*(1-BLOCK.cut))),kb:w.kb*(1-BLOCK.cut),stun:w.stun};
+    blocked=true;
+    w={dmg:Math.max(1,Math.round(w.dmg*(1-BLOCK.cut))),kb:w.kb*(1-BLOCK.kbCut),stun:w.stun,blk:true};
     say(t.x,t.y-CR-30,'막기!','#9fc6ff');burst(t.x+Math.cos(t.face)*(CR+14),t.y+Math.sin(t.face)*(CR+14),'#c9d6ff',10,140);
   }
   const dashing=t.dashT>0||gt-t.dashAt<.25;
   if(dashing&&Math.random()<DASH_DODGE){t.dg++;dodgeFx(t,mine);return 'dodge'}
   const [nx,ny]=applyHit(t,ax,ay,w,dashing);
+  if(blocked){t.stun=0;if(t.state==='hit')t.state='idle'}
   hitFx(t,w.dmg,mine,nx,ny,dashing?.3:w.kb);
   if(w.stun)say(t.x,t.y-CR-30,'기절!','#ffe08a');
   if(w.id){
@@ -1129,11 +1133,14 @@ function update(dt){
     if(P.dead)overT=1.3;else if(left.length===1)overT=.8;
   }else{overT-=dt;if(overT<=0&&mode==='play')showOver()}
 }
+// 몸 밀기: 막는 중인 방패만 무게 = 2 × 크기² (크기 1.1배씩 커질수록 더 세게 밈), 나머지는 모두 1
+const PUSH={blockMul:2};
+function pushW(f){return f.blocking?PUSH.blockMul*(f.sc||1)*(f.sc||1):1}
 function separateAll(){
   for(let a=0;a<F.length;a++)for(let b=a+1;b<F.length;b++){
     const p=F[a],q=F[b];if(!alive(p)||!alive(q)||p.inv>0||q.inv>0)continue;
     const dx=q.x-p.x,dy=q.y-p.y,d=Math.hypot(dx,dy)||.01,o=rad(p)+rad(q)-d;
-    if(o>0){const nx=dx/d,ny=dy/d;p.x-=nx*o/2;p.y-=ny*o/2;q.x+=nx*o/2;q.y+=ny*o/2}
+    if(o>0){const nx=dx/d,ny=dy/d,mp=pushW(p),mq=pushW(q),sp=o*mq/(mp+mq),sq=o*mp/(mp+mq);p.x-=nx*sp;p.y-=ny*sp;q.x+=nx*sq;q.y+=ny*sq}
   }
 }
 
@@ -1756,7 +1763,7 @@ function onlineUpdate(dt){
       if(me.inv<=0)for(const op of F){
         if(op===me||!alive(op)||op.inv>0)continue;
         const dx=me.x-op.x,dy=me.y-op.y,d=Math.hypot(dx,dy)||.01,o=rad(me)+rad(op)-d;
-        if(o>0){me.x+=dx/d*o;me.y+=dy/d*o}
+        if(o>0){const k=Math.min(1,2*pushW(op)/(pushW(me)+pushW(op)));me.x+=dx/d*o*k;me.y+=dy/d*o*k} // 막는 방패는 덜 밀려나요
       }
       if(Math.hypot(me.x,me.y)>R){me.falling=true;me.state='idle';me.skill=null}
     }
